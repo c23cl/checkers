@@ -75,14 +75,14 @@ function Board() {
 
   return (
     <div className="board">
-      <Row handleClick={handleClick} board={board} row={0}></Row>
-      <Row handleClick={handleClick} board={board} row={1}></Row>
-      <Row handleClick={handleClick} board={board} row={2}></Row>
-      <Row handleClick={handleClick} board={board} row={3}></Row>
-      <Row handleClick={handleClick} board={board} row={4}></Row>
-      <Row handleClick={handleClick} board={board} row={5}></Row>
-      <Row handleClick={handleClick} board={board} row={6}></Row>
-      <Row handleClick={handleClick} board={board} row={7}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={0}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={1}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={2}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={3}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={4}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={5}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={6}></Row>
+      <Row handleClick={handleClick} board={board} selectedCheckerRow={selectedCheckerRow} selectedCheckerCol={selectedCheckerCol} row={7}></Row>
     </div>
 
   );
@@ -91,14 +91,14 @@ function Board() {
 function Row(props) {
   return (
     <div className="row">
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={0}></Square>
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={1}></Square>
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={2}></Square>
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={3}></Square>
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={4}></Square>
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={5}></Square>
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={6}></Square>
-      <Square handleClick={props.handleClick} board={props.board} row={props.row} col={7}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={0}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={1}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={2}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={3}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={4}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={5}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={6}></Square>
+      <Square handleClick={props.handleClick} board={props.board} selectedCheckerRow={props.selectedCheckerRow} selectedCheckerCol={props.selectedCheckerCol} row={props.row} col={7}></Square>
     </div>
   );
 }
@@ -108,21 +108,24 @@ function Square(props) {
 
   return (
     <div className={ redSquare ? "redSquare" : "blackSquare" } onClick={() => props.handleClick(props.row, props.col)}>
-      {props.board[props.row][props.col] !== null ? <Checker team={props.board[props.row][props.col]}></Checker> : null}
+      {props.board[props.row][props.col] !== null ? <Checker team={props.board[props.row][props.col]} selected={props.row === props.selectedCheckerRow && props.col === props.selectedCheckerCol}></Checker> : null}
     </div>
+  );
+}
 
+function Checker(props) {
+  var className = props.team==="white" ? "whiteChecker" : "redChecker";
+  if (props.selected) {
+    className += " selectedChecker"
+  }
+  return (
+    <div className={className}></div>
   );
 }
 
 function App() {
   return (
    <Board></Board>
-  );
-}
-
-function Checker(props) {
-  return (
-    <div className={props.team==="white" ? "whiteChecker" : "redChecker"}></div>
   );
 }
 

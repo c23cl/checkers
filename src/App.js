@@ -23,7 +23,7 @@ function Board() {
       // Select checker
       setSelectedCheckerRow(row);
       setSelectedCheckerCol(col);
-    } else {
+    } else if(board[row][col] === null) {
       // Move checker
       if (selectedCheckerRow !== null )  {
         var newBoard = board.slice();

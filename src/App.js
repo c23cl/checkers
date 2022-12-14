@@ -2,6 +2,7 @@ import './App.css';
 import React, { useState } from 'react';
 
 function Board() {
+  var [redTurn, setRedTurn] = useState(true);
 
   var [selectedCheckerRow, setSelectedCheckerRow] = useState(null);
   var [selectedCheckerCol, setSelectedCheckerCol] = useState(null);
@@ -18,7 +19,7 @@ function Board() {
 
   const handleClick = (row, col) => {
     console.log(row, col);
-    if (board[row][col] !== null) {
+    if  ((board[row][col] === "red" && redTurn === true) || (board[row][col] === "white" && redTurn ===false)) {
       // Select checker
       setSelectedCheckerRow(row);
       setSelectedCheckerCol(col);
@@ -30,37 +31,45 @@ function Board() {
         //if selected checker is red
 
         //if its just moving
-        if(board[selectedCheckerRow][selectedCheckerCol] === "red" && row-selectedCheckerRow === -1 && Math.abs(col-selectedCheckerCol) ===1) {
+        if(board[selectedCheckerRow][selectedCheckerCol] === "red" && row-selectedCheckerRow === -1 && Math.abs(col-selectedCheckerCol) ===1 && redTurn === true) {
           newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
           newBoard[selectedCheckerRow][selectedCheckerCol] = null;
 
           setBoard(newBoard);
 
+          setRedTurn(false);
+
           //if its jumping
-        } else if (board[selectedCheckerRow][selectedCheckerCol]==="red" && Math.abs(selectedCheckerRow-row) === 2 && Math.abs(selectedCheckerCol-col) === 2 && board[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] === "white") {
+        } else if (board[selectedCheckerRow][selectedCheckerCol]==="red" && Math.abs(selectedCheckerRow-row) === 2 && Math.abs(selectedCheckerCol-col) === 2 && board[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] === "white" && redTurn === true) {
             newBoard[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] = null;
             newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
             newBoard[selectedCheckerRow][selectedCheckerCol] = null;
 
             setBoard(newBoard);
+
+            setRedTurn(false);
           }
 
         //if selected checker is white
 
         //if its just moving
-        if(board[selectedCheckerRow][selectedCheckerCol] === "white" && row-selectedCheckerRow === 1 && Math.abs(col-selectedCheckerCol) ===1) {
+        if(board[selectedCheckerRow][selectedCheckerCol] === "white" && row-selectedCheckerRow === 1 && Math.abs(col-selectedCheckerCol) ===1 && redTurn === false) {
           newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
           newBoard[selectedCheckerRow][selectedCheckerCol] = null;
           
           setBoard(newBoard);
+
+          setRedTurn(true);
           //if its jumping
-        } else if(board[selectedCheckerRow][selectedCheckerCol]==="white" && Math.abs(selectedCheckerRow-row) === 2 && Math.abs(selectedCheckerCol-col) === 2 && board[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] === "red") {
+        } else if(board[selectedCheckerRow][selectedCheckerCol]==="white" && Math.abs(selectedCheckerRow-row) === 2 && Math.abs(selectedCheckerCol-col) === 2 && board[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] === "red" && redTurn===false) {
             newBoard[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] = null;
 
           newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
           newBoard[selectedCheckerRow][selectedCheckerCol] = null;
 
           setBoard(newBoard);
+
+          setRedTurn(true);
         }
 
         setSelectedCheckerCol(null);

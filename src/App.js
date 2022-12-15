@@ -17,64 +17,101 @@ function Board() {
     ["red", null, "red", null, "red", null, "red", null],
   ]);
 
+  const anyValidJump = (srcRow, srcCol) => {
+    console.log(srcRow, srcCol);
+    if (redTurn === true && (canJump(srcRow, srcCol, srcRow - 2, srcCol + 2) || canJump(srcRow, srcCol, srcRow - 2, srcCol - 2))) {
+      return true;
+    } else if (redTurn === false && (canJump(srcRow, srcCol, srcRow + 2, srcCol + 2) || canJump(srcRow, srcCol, srcRow + 2, srcCol - 2))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const canJump = (srcRow, srcCol, destinationRow, destinationCol) => {
+    if (destinationRow < 0 || destinationRow > 7 || destinationCol < 0 || destinationCol > 7) {
+      return false;
+    } else if (redTurn === false && Math.abs(srcRow - destinationRow) === 2 && Math.abs(srcCol - destinationCol) === 2 && board[(srcRow + destinationRow) / 2][(srcCol + destinationCol) / 2] === "red" && board[destinationRow][destinationCol] === null) {
+      return true;
+    } else if (redTurn === true && Math.abs(srcRow - destinationRow) === 2 && Math.abs(srcCol - destinationCol) === 2 && board[(srcRow + destinationRow) / 2][(srcCol + destinationCol) / 2] === "white" && board[destinationRow][destinationCol] === null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   const handleClick = (row, col) => {
-    console.log(row, col);
-    if  ((board[row][col] === "red" && redTurn === true) || (board[row][col] === "white" && redTurn ===false)) {
+    if ((board[row][col] === "red" && redTurn === true) || (board[row][col] === "white" && redTurn === false)) {
       // Select checker
       setSelectedCheckerRow(row);
       setSelectedCheckerCol(col);
-    } else if(board[row][col] === null) {
+    } else if (board[row][col] === null) {
       // Move checker
-      if (selectedCheckerRow !== null )  {
+      if (selectedCheckerRow !== null) {
         var newBoard = board.slice();
 
         //if selected checker is red
 
         //if its just moving
-        if(board[selectedCheckerRow][selectedCheckerCol] === "red" && row-selectedCheckerRow === -1 && Math.abs(col-selectedCheckerCol) ===1 && redTurn === true) {
+        if (board[selectedCheckerRow][selectedCheckerCol] === "red" && row - selectedCheckerRow === -1 && Math.abs(col - selectedCheckerCol) === 1 && redTurn === true) {
           newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
           newBoard[selectedCheckerRow][selectedCheckerCol] = null;
 
           setBoard(newBoard);
 
           setRedTurn(false);
+          setSelectedCheckerRow(null);
+          setSelectedCheckerCol(null);
 
           //if its jumping
-        } else if (board[selectedCheckerRow][selectedCheckerCol]==="red" && Math.abs(selectedCheckerRow-row) === 2 && Math.abs(selectedCheckerCol-col) === 2 && board[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] === "white" && redTurn === true) {
-            newBoard[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] = null;
-            newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
-            newBoard[selectedCheckerRow][selectedCheckerCol] = null;
+        } else if (board[selectedCheckerRow][selectedCheckerCol] === "red" && canJump(selectedCheckerRow, selectedCheckerCol, row, col)) {
+          newBoard[(selectedCheckerRow + row) / 2][(selectedCheckerCol + col) / 2] = null;
+          newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
+          newBoard[selectedCheckerRow][selectedCheckerCol] = null;
 
-            setBoard(newBoard);
+          setBoard(newBoard);
 
+          if (!anyValidJump(row, col)) {
             setRedTurn(false);
+            setSelectedCheckerRow(null);
+            setSelectedCheckerCol(null);
+          } else {
+            setSelectedCheckerRow(row);
+            setSelectedCheckerCol(col);
           }
+        }
 
         //if selected checker is white
 
         //if its just moving
-        if(board[selectedCheckerRow][selectedCheckerCol] === "white" && row-selectedCheckerRow === 1 && Math.abs(col-selectedCheckerCol) ===1 && redTurn === false) {
+        if (board[selectedCheckerRow][selectedCheckerCol] === "white" && row - selectedCheckerRow === 1 && Math.abs(col - selectedCheckerCol) === 1 && redTurn === false) {
           newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
           newBoard[selectedCheckerRow][selectedCheckerCol] = null;
-          
+
           setBoard(newBoard);
 
           setRedTurn(true);
+          setSelectedCheckerRow(null);
+          setSelectedCheckerCol(null);
+
           //if its jumping
-        } else if(board[selectedCheckerRow][selectedCheckerCol]==="white" && Math.abs(selectedCheckerRow-row) === 2 && Math.abs(selectedCheckerCol-col) === 2 && board[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] === "red" && redTurn===false) {
-            newBoard[(selectedCheckerRow+row)/2][(selectedCheckerCol+col)/2] = null;
+        } else if (board[selectedCheckerRow][selectedCheckerCol] === "white" && canJump(selectedCheckerRow, selectedCheckerCol, row, col)) {
+          newBoard[(selectedCheckerRow + row) / 2][(selectedCheckerCol + col) / 2] = null;
 
           newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
           newBoard[selectedCheckerRow][selectedCheckerCol] = null;
 
           setBoard(newBoard);
 
-          setRedTurn(true);
+          if (!anyValidJump(row, col)) {
+            setRedTurn(true);
+            setSelectedCheckerRow(null);
+            setSelectedCheckerCol(null);
+          } else {
+            setSelectedCheckerRow(row);
+            setSelectedCheckerCol(col);
+          }
         }
-
-        setSelectedCheckerCol(null);
-        setSelectedCheckerRow(null);
-
       }
     }
 
@@ -116,17 +153,18 @@ function Square(props) {
   const redSquare = (props.row % 2 === 0 && props.col % 2 === 0) || (props.row % 2 !== 0 && props.col % 2 !== 0);
 
   return (
-    <div className={ redSquare ? "redSquare" : "blackSquare" } onClick={() => props.handleClick(props.row, props.col)}>
+    <div className={redSquare ? "redSquare" : "blackSquare"} onClick={() => props.handleClick(props.row, props.col)}>
       {props.board[props.row][props.col] !== null ? <Checker team={props.board[props.row][props.col]} selected={props.row === props.selectedCheckerRow && props.col === props.selectedCheckerCol}></Checker> : null}
     </div>
   );
 }
 
 function Checker(props) {
-  var className = props.team==="white" ? "whiteChecker" : "redChecker";
+  var className = props.team === "white" ? "whiteChecker" : "redChecker";
   if (props.selected) {
     className += " selectedChecker"
   }
+
   return (
     <div className={className}></div>
   );
@@ -134,7 +172,7 @@ function Checker(props) {
 
 function App() {
   return (
-   <Board></Board>
+    <Board></Board>
   );
 }
 

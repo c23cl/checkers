@@ -37,7 +37,7 @@ body {
   background-color: black;
 }
 
-.whiteChecker, .redChecker {
+.whiteChecker, .redChecker, .whiteKing, .redKing {
   height: 75%;
   width: 75%;
 }
@@ -50,6 +50,24 @@ body {
 .redChecker {
   border-radius: 100%;
   background-color: red;
+}
+
+.whiteKing {
+  border-radius: 100%;
+  background-color: white;
+  background-image: url(king.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.redKing {
+  border-radius: 100%;
+  background-color: red;
+  background-image: url(king.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .selectedChecker {

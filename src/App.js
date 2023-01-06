@@ -106,7 +106,7 @@ function Board() {
           if (row === 7) {
             newBoard[row][col] = "whiteKing";
           } else {
-            newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];;
+            newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
           }
 
           newBoard[selectedCheckerRow][selectedCheckerCol] = null;
@@ -117,7 +117,7 @@ function Board() {
           setSelectedCheckerRow(null);
           setSelectedCheckerCol(null);
 
-          //if its jumping
+         //if its jumping
         } else if ((board[selectedCheckerRow][selectedCheckerCol] === "whiteChecker" || board[selectedCheckerRow][selectedCheckerCol] === "whiteKing") && canJump(selectedCheckerRow, selectedCheckerCol, row, col)) {
           newBoard[(selectedCheckerRow + row) / 2][(selectedCheckerCol + col) / 2] = null;
 
@@ -140,9 +140,37 @@ function Board() {
             setSelectedCheckerCol(col);
           }
         }
+
+        //if white king
+        if ((board[selectedCheckerRow][selectedCheckerCol] === "whiteKing") && redTurn === false && Math.abs(col - selectedCheckerCol) === 1 && Math.abs(row - selectedCheckerRow) === 1) {
+          newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
+
+          newBoard[selectedCheckerRow][selectedCheckerCol] = null;
+
+          setBoard(newBoard);
+
+          setRedTurn(true);
+          setSelectedCheckerRow(null);
+          setSelectedCheckerCol(null);
+
+      }
+
+        //if red king
+        if ((board[selectedCheckerRow][selectedCheckerCol] === "redKing") && redTurn === true && Math.abs(col - selectedCheckerCol) === 1 && Math.abs(row - selectedCheckerRow) === 1) {
+          newBoard[row][col] = board[selectedCheckerRow][selectedCheckerCol];
+
+          newBoard[selectedCheckerRow][selectedCheckerCol] = null;
+
+          setBoard(newBoard);
+
+          setRedTurn(false);
+          setSelectedCheckerRow(null);
+          setSelectedCheckerCol(null);
+          console.log("works");
+
       }
     }
-
+  }
   };
 
 
